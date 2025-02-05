@@ -5,118 +5,115 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulateur de Changement de Mot de Passe</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background-color: #2E2E2E; color: white; }
-        .container { max-width: 400px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background-color: #3E3E3E; }
-        input, button { width: 100%; padding: 10px; margin: 5px 0; }
+        body { font-family: Arial, sans-serif; background-color: #F5F5F5; color: black; margin: 0; padding: 0; }
+        .container { max-width: 400px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background-color: white; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); }
+        .input-container { display: flex; align-items: center; position: relative; }
+        input { flex: 1; padding: 10px; margin: 5px 0; border: 1px solid #ccc; border-radius: 5px; }
+        .toggle-password { position: absolute; right: 10px; cursor: pointer; background: none; border: none; font-size: 18px; }
+        button { width: 100%; padding: 10px; margin: 5px 0; border: none; border-radius: 5px; background-color: #005DA4; color: white; cursor: pointer; }
+        button:hover { background-color: #004080; }
         .hidden { display: none; }
-        .error { color: red; }
+        .error { color: red; font-size: 14px; }
+        .success { color: green; font-size: 14px; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: white; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); position: relative; }
+        .login-button { font-size: 12px; padding: 5px 10px; background-color: #005DA4; color: white; border: none; border-radius: 5px; cursor: pointer; position: absolute; top: 10px; right: 10px; width: auto; }
+        .login-button:hover { background-color: #004080; }
     </style>
 </head>
 <body>
-    <div class="container" id="login-box">
+    <div class="header">
+        <h1>Ceméa simulateur de mot de passe</h1>
+        <button class="login-button" onclick="goToLogin()">S'inscrire / Se connecter</button>
+    </div>
+
+    <div class="container hidden" id="login-box">
         <h2>Connexion</h2>
         <input type="text" placeholder="Nom d'utilisateur" id="login-username">
         <input type="password" placeholder="Mot de passe" id="login-password">
         <p class="error hidden" id="login-error">Nom d'utilisateur ou mot de passe incorrect.</p>
         <button onclick="login()">Se connecter</button>
         <button onclick="forgotPassword()">Mot de passe oublié</button>
-        <button onclick="showRegister()">Créer un compte</button>
     </div>
 
     <div class="container hidden" id="reset-box">
         <h2>Réinitialisation du mot de passe</h2>
         <p>Entrez votre email pour recevoir un lien de réinitialisation.</p>
         <input type="email" placeholder="Votre email" id="email">
+        <p class="error hidden" id="reset-error">Veuillez entrer une adresse e-mail valide.</p>
         <button onclick="sendResetLink()">Envoyer</button>
-        <button onclick="goBack()">Retour</button>
     </div>
 
-    <div class="container hidden" id="email-simulation-box">
+    <div class="container hidden" id="email-simulation">
         <h2>Email de réinitialisation</h2>
-        <p>Vous avez reçu un email avec un lien pour réinitialiser votre mot de passe.</p>
-        <p><strong>De :</strong> support@exemple.com</p>
-        <p><strong>Objet :</strong> Réinitialisation de votre mot de passe</p>
-        <p>Cliquez sur le bouton ci-dessous pour réinitialiser votre mot de passe.</p>
-        <button onclick="showChangePassword()">Réinitialiser le mot de passe</button>
+        <p>De: support@fauxmail.com</p>
+        <p>À: Vous</p>
+        <p>Objet: Réinitialisation de votre mot de passe</p>
+        <p>Bonjour,</p>
+        <p>Nous avons reçu une demande de réinitialisation de votre mot de passe.</p>
+        <p>Pour le réinitialiser, cliquez sur le lien suivant :</p>
+        <p><a href="#" onclick="showChangePassword()" style="color:blue;">Réinitialiser mon mot de passe</a></p>
     </div>
 
-    <div class="container hidden" id="change-box">
+    <div class="container hidden" id="change-password-box">
         <h2>Nouveau mot de passe</h2>
         <input type="password" placeholder="Nouveau mot de passe" id="new-password">
         <input type="password" placeholder="Confirmez le mot de passe" id="confirm-password">
+        <p class="error hidden" id="password-error">Les mots de passe ne correspondent pas.</p>
+        <p class="success hidden" id="password-success">Mot de passe changé avec succès !</p>
         <button onclick="changePassword()">Valider</button>
-        <button onclick="goBack()">Retour</button>
-    </div>
-
-    <div class="container hidden" id="register-box">
-        <h2>Créer un compte</h2>
-        <input type="text" placeholder="Nom d'utilisateur" id="register-username">
-        <input type="email" placeholder="Adresse email" id="register-email">
-        <input type="password" placeholder="Mot de passe" id="register-password">
-        <input type="password" placeholder="Confirmez le mot de passe" id="register-confirm-password">
-        <button onclick="register()">S'inscrire</button>
-        <button onclick="goBack()">Retour</button>
     </div>
 
     <script>
+        function goToLogin() {
+            hideAll();
+            document.getElementById('login-box').classList.remove('hidden');
+        }
+
         function login() {
-            let username = document.getElementById('login-username').value;
-            let password = document.getElementById('login-password').value;
-            if (username !== 'admin' || password !== 'password123') {
-                document.getElementById('login-error').classList.remove('hidden');
-            } else {
-                alert('Connexion réussie !');
-            }
+            document.getElementById('login-error').classList.remove('hidden');
         }
 
         function forgotPassword() {
-            document.getElementById('login-box').classList.add('hidden');
+            hideAll();
             document.getElementById('reset-box').classList.remove('hidden');
         }
 
         function sendResetLink() {
-            document.getElementById('reset-box').classList.add('hidden');
-            document.getElementById('email-simulation-box').classList.remove('hidden');
+            let email = document.getElementById('email');
+            let resetError = document.getElementById('reset-error');
+            let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!emailRegex.test(email.value)) {
+                resetError.classList.remove('hidden');
+                return;
+            }
+            resetError.classList.add('hidden');
+            hideAll();
+            document.getElementById('email-simulation').classList.remove('hidden');
         }
 
         function showChangePassword() {
-            document.getElementById('email-simulation-box').classList.add('hidden');
-            document.getElementById('change-box').classList.remove('hidden');
+            hideAll();
+            document.getElementById('change-password-box').classList.remove('hidden');
         }
 
         function changePassword() {
             let newPassword = document.getElementById('new-password').value;
             let confirmPassword = document.getElementById('confirm-password').value;
-            if (newPassword === confirmPassword && newPassword.length >= 6) {
-                alert('Mot de passe changé avec succès !');
+            let successMessage = document.getElementById('password-success');
+            let errorMessage = document.getElementById('password-error');
+            
+            if (newPassword === confirmPassword && newPassword.length > 0) {
+                errorMessage.classList.add('hidden');
+                successMessage.classList.remove('hidden');
             } else {
-                alert('Les mots de passe ne correspondent pas ou sont trop courts.');
+                successMessage.classList.add('hidden');
+                errorMessage.classList.remove('hidden');
             }
         }
 
-        function showRegister() {
-            document.getElementById('login-box').classList.add('hidden');
-            document.getElementById('register-box').classList.remove('hidden');
-        }
-
-        function register() {
-            let username = document.getElementById('register-username').value;
-            let email = document.getElementById('register-email').value;
-            let password = document.getElementById('register-password').value;
-            let confirmPassword = document.getElementById('register-confirm-password').value;
-            
-            if (password !== confirmPassword) {
-                alert('Les mots de passe ne correspondent pas.');
-                return;
-            }
-            
-            alert('Compte créé avec succès ! Vous pouvez maintenant vous connecter.');
-            goBack();
-        }
-
-        function goBack() {
+        function hideAll() {
             document.querySelectorAll('.container').forEach(box => box.classList.add('hidden'));
-            document.getElementById('login-box').classList.remove('hidden');
         }
     </script>
 </body>
