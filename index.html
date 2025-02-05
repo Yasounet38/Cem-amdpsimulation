@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -9,15 +10,18 @@
         .container { max-width: 400px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; }
         input, button { width: 100%; padding: 10px; margin: 5px 0; }
         .hidden { display: none; }
+        .error { color: red; }
     </style>
 </head>
 <body>
     <div class="container" id="login-box">
         <h2>Connexion</h2>
-        <input type="text" placeholder="Nom d'utilisateur" id="username">
-        <input type="password" placeholder="Mot de passe" id="password">
+        <input type="text" placeholder="Nom d'utilisateur" id="login-username">
+        <input type="password" placeholder="Mot de passe" id="login-password">
+        <p class="error hidden" id="login-error">Nom d'utilisateur ou mot de passe incorrect.</p>
         <button onclick="login()">Se connecter</button>
         <button onclick="forgotPassword()">Mot de passe oublié</button>
+        <button onclick="showRegister()">Créer un compte</button>
     </div>
 
     <div class="container hidden" id="reset-box">
@@ -34,14 +38,33 @@
         <button onclick="changePassword()">Valider</button>
     </div>
 
+    <div class="container hidden" id="register-box">
+        <h2>Créer un compte</h2>
+        <input type="text" placeholder="Nom d'utilisateur" id="register-username">
+        <input type="email" placeholder="Adresse email" id="register-email">
+        <input type="password" placeholder="Mot de passe" id="register-password">
+        <input type="password" placeholder="Confirmez le mot de passe" id="register-confirm-password">
+        <button onclick="register()">S'inscrire</button>
+    </div>
+
     <script>
+        function login() {
+            let username = document.getElementById('login-username').value;
+            let password = document.getElementById('login-password').value;
+            if (username !== 'admin' || password !== 'password123') {
+                document.getElementById('login-error').classList.remove('hidden');
+            } else {
+                alert('Connexion réussie !');
+            }
+        }
+
         function forgotPassword() {
             document.getElementById('login-box').classList.add('hidden');
             document.getElementById('reset-box').classList.remove('hidden');
         }
 
         function sendResetLink() {
-            alert('Un lien de réinitialisation a été envoyé à votre adresse email.');
+            alert('Un email de réinitialisation a été envoyé à votre adresse. Cliquez sur le lien pour réinitialiser votre mot de passe.');
             document.getElementById('reset-box').classList.add('hidden');
             document.getElementById('change-box').classList.remove('hidden');
         }
@@ -54,6 +77,27 @@
             } else {
                 alert('Les mots de passe ne correspondent pas ou sont trop courts.');
             }
+        }
+
+        function showRegister() {
+            document.getElementById('login-box').classList.add('hidden');
+            document.getElementById('register-box').classList.remove('hidden');
+        }
+
+        function register() {
+            let username = document.getElementById('register-username').value;
+            let email = document.getElementById('register-email').value;
+            let password = document.getElementById('register-password').value;
+            let confirmPassword = document.getElementById('register-confirm-password').value;
+            
+            if (password !== confirmPassword) {
+                alert('Les mots de passe ne correspondent pas.');
+                return;
+            }
+            
+            alert('Compte créé avec succès ! Vous pouvez maintenant vous connecter.');
+            document.getElementById('register-box').classList.add('hidden');
+            document.getElementById('login-box').classList.remove('hidden');
         }
     </script>
 </body>
