@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -6,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulateur de Changement de Mot de Passe</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
-        .container { max-width: 400px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; }
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background-color: #2E2E2E; color: white; }
+        .container { max-width: 400px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background-color: #3E3E3E; }
         input, button { width: 100%; padding: 10px; margin: 5px 0; }
         .hidden { display: none; }
         .error { color: red; }
@@ -29,6 +28,16 @@
         <p>Entrez votre email pour recevoir un lien de réinitialisation.</p>
         <input type="email" placeholder="Votre email" id="email">
         <button onclick="sendResetLink()">Envoyer</button>
+        <button onclick="goBack()">Retour</button>
+    </div>
+
+    <div class="container hidden" id="email-simulation-box">
+        <h2>Email de réinitialisation</h2>
+        <p>Vous avez reçu un email avec un lien pour réinitialiser votre mot de passe.</p>
+        <p><strong>De :</strong> support@exemple.com</p>
+        <p><strong>Objet :</strong> Réinitialisation de votre mot de passe</p>
+        <p>Cliquez sur le bouton ci-dessous pour réinitialiser votre mot de passe.</p>
+        <button onclick="showChangePassword()">Réinitialiser le mot de passe</button>
     </div>
 
     <div class="container hidden" id="change-box">
@@ -36,6 +45,7 @@
         <input type="password" placeholder="Nouveau mot de passe" id="new-password">
         <input type="password" placeholder="Confirmez le mot de passe" id="confirm-password">
         <button onclick="changePassword()">Valider</button>
+        <button onclick="goBack()">Retour</button>
     </div>
 
     <div class="container hidden" id="register-box">
@@ -45,6 +55,7 @@
         <input type="password" placeholder="Mot de passe" id="register-password">
         <input type="password" placeholder="Confirmez le mot de passe" id="register-confirm-password">
         <button onclick="register()">S'inscrire</button>
+        <button onclick="goBack()">Retour</button>
     </div>
 
     <script>
@@ -64,8 +75,12 @@
         }
 
         function sendResetLink() {
-            alert('Un email de réinitialisation a été envoyé à votre adresse. Cliquez sur le lien pour réinitialiser votre mot de passe.');
             document.getElementById('reset-box').classList.add('hidden');
+            document.getElementById('email-simulation-box').classList.remove('hidden');
+        }
+
+        function showChangePassword() {
+            document.getElementById('email-simulation-box').classList.add('hidden');
             document.getElementById('change-box').classList.remove('hidden');
         }
 
@@ -96,7 +111,11 @@
             }
             
             alert('Compte créé avec succès ! Vous pouvez maintenant vous connecter.');
-            document.getElementById('register-box').classList.add('hidden');
+            goBack();
+        }
+
+        function goBack() {
+            document.querySelectorAll('.container').forEach(box => box.classList.add('hidden'));
             document.getElementById('login-box').classList.remove('hidden');
         }
     </script>
